@@ -2,101 +2,62 @@
 
 @section('title', 'Edit Berita')
 
+@push('styles')
+@include('partials.ui-styles')
+@include('partials.form-styles')
+@endpush
+
 @section('content')
-<main class="content">
-    <div class="container">
+<div class="container">
+    <h1 class="page-title">Edit Berita</h1>
+    <p class="page-subtitle">Perbarui berita atau pengumuman.</p>
+    <hr class="divider">
 
-        <h1 class="page-title">Edit Berita</h1>
-        <p class="page-subtitle">Perbarui informasi berita di bawah ini.</p>
-        <hr class="divider">
+    <form action="{{ route('berita.update', $berita->getKey()) }}" method="POST"
+          enctype="multipart/form-data" class="form-card">
+        @csrf
+        @method('PUT')
 
-        @if ($errors->any())
-            <div style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:5px; margin-bottom:16px;">
-                <ul style="margin:0; padding-left:20px;">
-                    @foreach ($errors->all() as $err)
-                        <li>{{ $err }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <div class="card">
-            <form action="{{ route('berita.update', $berita->id) }}"
-                  method="POST"
-                  enctype="multipart/form-data">
-
-                @csrf
-                @method('PUT')
-
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; font-weight:600; margin-bottom:6px;">
-                        Judul <span style="color:red;">*</span>
-                    </label>
-                    <input type="text"
-                           name="judul"
-                           value="{{ old('judul', $berita->judul) }}"
-                           required
-                           style="width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
-                </div>
-
-                <div style="margin-bottom:16px;">
-                    <label style="display:block; font-weight:600; margin-bottom:6px;">
-                        Isi Berita <span style="color:red;">*</span>
-                    </label>
-                    <textarea name="isi"
-                              rows="6"
-                              required
-                              style="width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px;">{{ old('isi', $berita->isi) }}</textarea>
-                </div>
-
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:6px;">Penulis</label>
-                        <input type="text"
-                               name="penulis"
-                               value="{{ old('penulis', $berita->penulis) }}"
-                               style="width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
-                    </div>
-                    <div>
-                        <label style="display:block; font-weight:600; margin-bottom:6px;">Tanggal</label>
-                        <input type="date"
-                               name="tanggal"
-                               value="{{ old('tanggal', optional($berita->tanggal)->format('Y-m-d')) }}"
-                               style="width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
-                    </div>
-                </div>
-
-                <div style="margin-bottom:20px;">
-                    <label style="display:block; font-weight:600; margin-bottom:6px;">
-                        Foto <span style="color:#888; font-weight:400;">(biarkan kosong jika tidak diganti)</span>
-                    </label>
-                    <input type="file"
-                           name="foto"
-                           accept="image/*"
-                           style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px;">
-
-                    @if ($berita->foto)
-                        <div style="margin-top:12px;">
-                            <p class="muted" style="margin-bottom:6px;">Foto saat ini:</p>
-                            <img src="{{ asset('storage/' . $berita->foto) }}"
-                                 alt="{{ $berita->judul }}"
-                                 style="max-height:180px; border-radius:6px; border:1px solid #ddd;">
-                        </div>
-                    @endif
-                </div>
-
-                <div class="action-buttons" style="margin-top:20px; padding-top:16px; border-top:1px solid #eee;">
-                    <button type="submit" class="btn-action">
-                        Update
-                    </button>
-                    <a href="{{ route('berita.index') }}" class="btn-action" style="background:#6c757d;">
-                        Batal
-                    </a>
-                </div>
-
-            </form>
+        <div class="form-group">
+            <label for="judul">Judul <span class="req">*</span></label>
+            <input type="text" id="judul" name="judul" value="{{ old('judul', $berita->judul) }}" required>
+            @error('judul')<div class="form-error">{{ $message }}</div>@enderror
         </div>
 
-    </div>
-</main>
+        <div class="form-group">
+            <label for="isi">Isi Berita <span class="req">*</span></label>
+            <textarea id="isi" name="isi" class="tall" required>{{ old('isi', $berita->isi) }}</textarea>
+            @error('isi')<div class="form-error">{{ $message }}</div>@enderror
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label for="penulis">Penulis</label>
+                <input type="text" id="penulis" name="penulis" value="{{ old('penulis', $berita->penulis) }}">
+                @error('penulis')<div class="form-error">{{ $message }}</div>@enderror
+            </div>
+            <div class="form-group">
+                <label for="tanggal">Tanggal</label>
+                <input type="date" id="tanggal" name="tanggal"
+                       value="{{ old('tanggal', optional($berita->tanggal)->format('Y-m-d')) }}">
+                @error('tanggal')<div class="form-error">{{ $message }}</div>@enderror
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="foto">Foto <span class="hint">(kosongkan jika tidak ingin mengganti, maks. 2 MB)</span></label>
+            @if ($berita->gambar_url)
+                <img src="{{ $berita->gambar_url }}" alt="Foto saat ini" class="foto-lama">
+            @endif
+            <input type="file" id="foto" name="foto" accept="image/*" data-preview>
+            <img id="preview" class="img-preview" alt="Preview foto baru">
+            @error('foto')<div class="form-error">{{ $message }}</div>@enderror
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-simpan">Simpan Perubahan</button>
+            <a href="{{ route('berita.index') }}" class="btn btn-outline">Batal</a>
+        </div>
+    </form>
+</div>
 @endsection

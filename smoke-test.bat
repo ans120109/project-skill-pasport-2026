@@ -1,11 +1,6 @@
 @echo off
 setlocal
 
-rem ============================================================
-rem  Wrapper untuk menjalankan smoke-test.sh dari PowerShell/CMD
-rem  Cukup ketik:  .\smoke-test.bat
-rem ============================================================
-
 set "BASH=C:\Program Files\Git\bin\bash.exe"
 if not exist "%BASH%" set "BASH=C:\Program Files\Git\usr\bin\bash.exe"
 if not exist "%BASH%" set "BASH=C:\Program Files (x86)\Git\bin\bash.exe"

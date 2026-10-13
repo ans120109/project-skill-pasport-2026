@@ -2,118 +2,50 @@
 
 @section('title', 'Tambah Ekstrakurikuler')
 
-@section('content')
-<div class="ekskul-form-container">
-    <h1>Tambah Ekstrakurikuler</h1>
+@push('styles')
+@include('partials.ui-styles')
+@include('partials.form-styles')
+@endpush
 
-    <form action="{{ route('ekstrakurikuler.store') }}" method="POST" enctype="multipart/form-data" class="ekskul-form">
+@section('content')
+<div class="container">
+    <h1 class="page-title">Tambah Ekstrakurikuler</h1>
+    <p class="page-subtitle">Isi data ekstrakurikuler baru.</p>
+    <hr class="divider">
+
+    <form action="{{ route('ekstrakurikuler.store') }}" method="POST" enctype="multipart/form-data" class="form-card">
         @csrf
 
         <div class="form-group">
-            <label>Nama Ekstrakurikuler</label>
-            <input type="text" name="nama" value="{{ old('nama') }}">
-            @error('nama') <p class="form-error">{{ $message }}</p> @enderror
+            <label for="nama">Nama Ekstrakurikuler <span class="req">*</span></label>
+            <input type="text" id="nama" name="nama" value="{{ old('nama') }}" required>
+            @error('nama')<div class="form-error">{{ $message }}</div>@enderror
         </div>
 
         <div class="form-group">
-            <label>Deskripsi</label>
-            <textarea name="deskripsi" rows="4">{{ old('deskripsi') }}</textarea>
-            @error('deskripsi') <p class="form-error">{{ $message }}</p> @enderror
+            <label for="jadwal">Jadwal</label>
+            <input type="text" id="jadwal" name="jadwal" value="{{ old('jadwal') }}"
+                   placeholder="Contoh: Senin dan Jumat, 15.00">
+            @error('jadwal')<div class="form-error">{{ $message }}</div>@enderror
         </div>
 
         <div class="form-group">
-            <label>Jadwal (opsional)</label>
-            <input type="text" name="jadwal" value="{{ old('jadwal') }}" placeholder="Contoh: Sabtu, 08.00 - 10.00">
+            <label for="deskripsi">Deskripsi</label>
+            <textarea id="deskripsi" name="deskripsi">{{ old('deskripsi') }}</textarea>
+            @error('deskripsi')<div class="form-error">{{ $message }}</div>@enderror
         </div>
 
         <div class="form-group">
-            <label>Gambar (opsional)</label>
-            <input type="file" name="gambar" id="gambar-input" accept="image/*">
-            @error('gambar') <p class="form-error">{{ $message }}</p> @enderror
-            <img id="preview-gambar" class="preview-image" style="display:none;">
+            <label for="gambar">Gambar <span class="hint">(maks. 2 MB)</span></label>
+            <input type="file" id="gambar" name="gambar" accept="image/*" data-preview>
+            <img id="preview" class="img-preview" alt="Preview gambar">
+            @error('gambar')<div class="form-error">{{ $message }}</div>@enderror
         </div>
 
-        <button type="submit" class="btn-primary">Simpan</button>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-simpan">Simpan</button>
+            <a href="{{ route('ekstrakurikuler.index') }}" class="btn btn-outline">Batal</a>
+        </div>
     </form>
 </div>
 @endsection
-
-@push('styles')
-<style>
-.ekskul-form-container {
-    max-width: 560px;
-    margin: 0 auto;
-    padding: 40px 20px;
-}
-
-.ekskul-form-container h1 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 24px;
-}
-
-.ekskul-form {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 600;
-    font-size: 14px;
-    color: #334155;
-    margin-bottom: 6px;
-}
-
-.form-group input[type="text"],
-.form-group input[type="file"],
-.form-group textarea {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-.form-group textarea {
-    resize: vertical;
-}
-
-.form-error {
-    color: #dc2626;
-    font-size: 13px;
-    margin-top: 4px;
-}
-
-.preview-image {
-    margin-top: 10px;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-</style>
-@endpush
-
-@push('scripts')
-<script>
-document.getElementById('gambar-input').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    const preview = document.getElementById('preview-gambar');
-
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (event) {
-            preview.src = event.target.result;
-            preview.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    } else {
-        preview.style.display = 'none';
-    }
-});
-</script>
-@endpush

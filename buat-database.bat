@@ -1,14 +1,6 @@
 @echo off
 setlocal
 
-rem ============================================================
-rem  Membuat database MySQL/MariaDB kosong untuk project ini.
-rem  Pemakaian (PowerShell/CMD):
-rem      .\buat-database.bat NAMA_DATABASE
-rem  Contoh:
-rem      .\buat-database.bat db_profil_sekolah_baru
-rem ============================================================
-
 if "%~1"=="" (
     echo.
     echo  Pemakaian:  buat-database.bat NAMA_DATABASE

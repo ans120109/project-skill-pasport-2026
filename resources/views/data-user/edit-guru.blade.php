@@ -41,24 +41,26 @@
                 <div class="form-group">
                     <label for="nip">NIP</label>
                     <input type="text" id="nip" name="nip" value="{{ old('nip', $guru->nip) }}"
-                           class="form-control @error('nip') is-invalid @enderror" required>
+                           class="form-control @error('nip') is-invalid @enderror">
                     @error('nip') <div class="error-text">{{ $message }}</div> @enderror
                 </div>
 
                 <div class="form-group">
-                    <label for="mata_pelajaran">Mata Pelajaran</label>
-                    <input type="text" id="mata_pelajaran" name="mata_pelajaran"
-                           value="{{ old('mata_pelajaran', $guru->mata_pelajaran) }}"
-                           class="form-control @error('mata_pelajaran') is-invalid @enderror" required>
-                    @error('mata_pelajaran') <div class="error-text">{{ $message }}</div> @enderror
+                    <label for="jabatan">Jabatan</label>
+                    <input type="text" id="jabatan" name="jabatan"
+                           value="{{ old('jabatan', $guru->jabatan) }}"
+                           class="form-control @error('jabatan') is-invalid @enderror" required>
+                    @error('jabatan') <div class="error-text">{{ $message }}</div> @enderror
                 </div>
             </div>
 
             <div class="form-group">
-                <label for="no_hp">No. HP</label>
-                <input type="text" id="no_hp" name="no_hp" value="{{ old('no_hp', $guru->no_hp) }}"
-                       class="form-control @error('no_hp') is-invalid @enderror">
-                @error('no_hp') <div class="error-text">{{ $message }}</div> @enderror
+                <label for="tipe">Tipe</label>
+                <select id="tipe" name="tipe" class="form-control @error('tipe') is-invalid @enderror" required>
+                    <option value="guru" @selected(old('tipe', $guru->tipe) === 'guru')>Guru</option>
+                    <option value="staff" @selected(old('tipe', $guru->tipe) === 'staff')>Staff</option>
+                </select>
+                @error('tipe') <div class="error-text">{{ $message }}</div> @enderror
             </div>
 
             <div class="form-actions">

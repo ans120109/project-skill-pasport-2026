@@ -80,7 +80,6 @@
                                                 @php
                                                     $isOperator = Auth::user()->role === 'operator';
                                                     $targetIsAdmin = $user->role === 'admin';
-                                                    // Operator tidak bisa edit user admin
                                                     $canEdit = ! $isOperator || ! $targetIsAdmin;
                                                 @endphp
 
@@ -127,7 +126,6 @@
             </div>
         </div>
 
-        {{-- Info untuk operator --}}
         @auth
             @if (Auth::user()->role === 'operator')
                 <div style="background:#e7f3ff; border-left:4px solid #2196F3; padding:12px 16px; border-radius:5px; margin-top:16px;">

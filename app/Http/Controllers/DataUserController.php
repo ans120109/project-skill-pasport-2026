@@ -10,10 +10,10 @@ class DataUserController extends Controller
 {
     public function create()
     {
-        $siswa = Siswa::latest()->get();
-        $guru  = Guru::latest()->get();
+        $siswas = Siswa::latest()->get();
+        $gurus  = Guru::latest()->get();
 
-        return view('data-user.create', compact('siswa', 'guru'));
+        return view('data-user.create', compact('siswas', 'gurus'));
     }
 
     public function store(Request $request)
@@ -23,8 +23,7 @@ class DataUserController extends Controller
             'nama'           => 'required|string|max:100',
             'jenis_kelamin'  => 'required|in:L,P',
             'kelas'          => 'required|string|max:20',
-            'sekolah_asal'   => 'nullable|string|max:100',   // ← TAMBAH
-            // 'jurusan'        => 'nullable|string|max:50',
+            'sekolah_asal'   => 'nullable|string|max:100',
             'tanggal_lahir'  => 'nullable|date',
             'alamat'         => 'nullable|string',
             'no_hp'          => 'nullable|string|max:20',
@@ -32,7 +31,7 @@ class DataUserController extends Controller
 
         Siswa::create($request->only([
             'nis', 'nama', 'jenis_kelamin', 'kelas',
-            'sekolah_asal',     // ← TAMBAH di sini
+            'sekolah_asal',
             'jurusan', 'tanggal_lahir', 'alamat', 'no_hp'
         ]));
 
@@ -52,8 +51,7 @@ class DataUserController extends Controller
             'nama'           => 'required|string|max:100',
             'jenis_kelamin'  => 'required|in:L,P',
             'kelas'          => 'required|string|max:20',
-            'sekolah_asal'   => 'nullable|string|max:100',   // ← TAMBAH
-            // 'jurusan'        => 'nullable|string|max:50',
+            'sekolah_asal'   => 'nullable|string|max:100',
             'tanggal_lahir'  => 'nullable|date',
             'alamat'         => 'nullable|string',
             'no_hp'          => 'nullable|string|max:20',
@@ -61,7 +59,7 @@ class DataUserController extends Controller
 
         $siswa->update($request->only([
             'nis', 'nama', 'jenis_kelamin', 'kelas',
-            'sekolah_asal',     // ← TAMBAH di sini
+            'sekolah_asal',
             'jurusan', 'tanggal_lahir', 'alamat', 'no_hp'
         ]));
 
@@ -80,20 +78,13 @@ class DataUserController extends Controller
     public function storeGuru(Request $request)
     {
         $request->validate([
-            'nip'             => 'required|string|max:20|unique:guru,nip',
-            'nama'            => 'required|string|max:100',
-            'jenis_kelamin'   => 'required|in:L,P',
-            'mata_pelajaran'  => 'nullable|string|max:100',
-            'jabatan'         => 'nullable|string|max:50',
-            'tanggal_lahir'   => 'nullable|date',
-            'alamat'          => 'nullable|string',
-            'no_hp'           => 'nullable|string|max:20',
+            'nip'     => 'nullable|string|max:30|unique:gurus,nip',
+            'nama'    => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'tipe'    => 'required|in:guru,staff',
         ]);
 
-        Guru::create($request->only([
-            'nip', 'nama', 'jenis_kelamin', 'mata_pelajaran', 'jabatan',
-            'tanggal_lahir', 'alamat', 'no_hp'
-        ]));
+        Guru::create($request->only(['nip', 'nama', 'jabatan', 'tipe']));
 
         return redirect()->route('siswa-guru.create')
             ->with('success', 'Data guru berhasil ditambahkan.');
@@ -107,20 +98,13 @@ class DataUserController extends Controller
     public function updateGuru(Request $request, Guru $guru)
     {
         $request->validate([
-            'nip'             => 'required|string|max:20|unique:guru,nip,' . $guru->id,
-            'nama'            => 'required|string|max:100',
-            'jenis_kelamin'   => 'required|in:L,P',
-            'mata_pelajaran'  => 'nullable|string|max:100',
-            'jabatan'         => 'nullable|string|max:50',
-            'tanggal_lahir'   => 'nullable|date',
-            'alamat'          => 'nullable|string',
-            'no_hp'           => 'nullable|string|max:20',
+            'nip'     => 'nullable|string|max:30|unique:gurus,nip,' . $guru->id,
+            'nama'    => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'tipe'    => 'required|in:guru,staff',
         ]);
 
-        $guru->update($request->only([
-            'nip', 'nama', 'jenis_kelamin', 'mata_pelajaran', 'jabatan',
-            'tanggal_lahir', 'alamat', 'no_hp'
-        ]));
+        $guru->update($request->only(['nip', 'nama', 'jabatan', 'tipe']));
 
         return redirect()->route('siswa-guru.create')
             ->with('success', 'Data guru berhasil diperbarui.');

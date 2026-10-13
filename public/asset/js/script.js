@@ -1,13 +1,4 @@
-// =====================================================
-// SCRIPT.JS
-// WEBSITE SEKOLAH - LARAVEL
-// =====================================================
-
 document.addEventListener("DOMContentLoaded", function () {
-
-    // =================================================
-    // NAVBAR MOBILE
-    // =================================================
 
     const menuButton = document.querySelector(".menu-button");
     const navMenu = document.querySelector(".nav-menu");
@@ -21,23 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =================================================
-    // TAHUN OTOMATIS
-    // =================================================
-
     const yearElements = document.querySelectorAll(".current-year");
 
     yearElements.forEach(function (element) {
         element.textContent = new Date().getFullYear();
     });
 
-
-    // =================================================
-    // REGISTER
-    // =================================================
-    // Bagian ini hanya melakukan validasi.
-    // Data register tetap dikirim ke Laravel.
-    // =================================================
 
     const registerForm = document.getElementById("registerForm");
 
@@ -51,7 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const konfirmasi = document.getElementById("konfirmasi");
 
 
-            // Pastikan semua input tersedia
             if (
                 !nama ||
                 !email ||
@@ -62,12 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Hapus spasi pada nama dan email
             nama.value = nama.value.trim();
             email.value = email.value.trim();
 
 
-            // Cek nama
             if (nama.value === "") {
 
                 event.preventDefault();
@@ -80,7 +57,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Cek email
             if (email.value === "") {
 
                 event.preventDefault();
@@ -93,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Cek password
             if (password.value.length < 6) {
 
                 event.preventDefault();
@@ -106,7 +81,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Cek konfirmasi password
             if (password.value !== konfirmasi.value) {
 
                 event.preventDefault();
@@ -118,27 +92,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            // Jika semua benar,
-            // form akan diteruskan ke Laravel.
         });
 
     }
 
-
-    // =================================================
-    // LOGIN
-    // =================================================
-    //
-    // PENTING:
-    // Login TIDAK menggunakan localStorage.
-    //
-    // Form login akan dikirim ke:
-    // POST /login
-    //
-    // Kemudian LoginController akan menjalankan:
-    // Auth::attempt()
-    //
-    // =================================================
 
     const loginForm = document.getElementById("loginForm");
 
@@ -158,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
             email.value = email.value.trim();
 
 
-            // Cek email
             if (email.value === "") {
 
                 event.preventDefault();
@@ -171,7 +127,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Cek password
             if (password.value === "") {
 
                 event.preventDefault();
@@ -184,27 +139,10 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // =================================================
-            // JANGAN menggunakan:
-            //
-            // event.preventDefault();
-            // localStorage.setItem("isLogin", "true");
-            // window.location.href = "/profile";
-            //
-            // Karena login harus diproses oleh Laravel.
-            // =================================================
-
         });
 
     }
 
-
-    // =================================================
-    // LOGOUT
-    // =================================================
-    //
-    // Logout juga diproses oleh Laravel.
-    // =================================================
 
     const logoutButtons =
         document.querySelectorAll(".logout-button");
@@ -229,10 +167,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-
-    // =================================================
-    // PENCARIAN BERITA
-    // =================================================
 
     const searchBerita =
         document.getElementById("searchBerita");
@@ -272,10 +206,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =================================================
-    // FORM KONTAK
-    // =================================================
-
     const contactForm =
         document.getElementById("contactForm");
 
@@ -304,7 +234,6 @@ document.addEventListener("DOMContentLoaded", function () {
             pesan.value = pesan.value.trim();
 
 
-            // Validasi nama
             if (nama.value === "") {
 
                 event.preventDefault();
@@ -317,7 +246,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Validasi email
             if (email.value === "") {
 
                 event.preventDefault();
@@ -330,7 +258,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
 
-            // Validasi pesan
             if (pesan.value === "") {
 
                 event.preventDefault();
@@ -347,10 +274,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    // =================================================
-    // TOMBOL KEMBALI
-    // =================================================
-
     const backButtons =
         document.querySelectorAll(".btn-back");
 
@@ -365,10 +288,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-
-    // =================================================
-    // KONFIRMASI HAPUS
-    // =================================================
 
     const deleteButtons =
         document.querySelectorAll(".btn-delete");
@@ -393,10 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-
-    // =================================================
-    // PASSWORD TOGGLE
-    // =================================================
 
     const passwordToggle =
         document.querySelector(".password-toggle");

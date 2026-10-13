@@ -21,8 +21,6 @@
 
     <div class="user-edit-card">
 
-        {{-- NAMA --}}
-
         <div class="user-form-group">
 
             <label>
@@ -35,8 +33,6 @@
 
         </div>
 
-
-        {{-- USERNAME --}}
 
         <div class="user-form-group">
 
@@ -51,8 +47,6 @@
         </div>
 
 
-        {{-- ROLE --}}
-
         <div class="user-form-group">
 
             <label>
@@ -66,8 +60,6 @@
         </div>
 
 
-        {{-- STATUS --}}
-
         <div class="user-form-group">
 
             <label>
@@ -80,8 +72,6 @@
 
         </div>
 
-
-        {{-- TERAKHIR AKTIF --}}
 
         <div class="user-form-group">
 
@@ -101,8 +91,6 @@
         </div>
 
 
-        {{-- TERDAFTAR --}}
-
         <div class="user-form-group">
 
             <label>
@@ -115,8 +103,6 @@
 
         </div>
 
-
-        {{-- BUTTON --}}
 
         <div class="user-form-actions">
 

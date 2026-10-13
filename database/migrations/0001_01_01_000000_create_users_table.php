@@ -6,21 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('username')->unique();
-            // $table->timestamp('username_verified_at')->nullable();
             $table->string('password');
-
-            // Kolom role untuk membedakan hak akses.
-            // Nilainya diperbarui lagi oleh migrasi 2026_09_28_063458_update_role_column_in_users_table.
-            $table->enum('role', ['admin', 'guru', 'siswa'])->default('siswa');
+            $table->string('role')->default('siswa');
+            $table->string('status')->default('aktif');
+            $table->boolean('is_active')->default(true);
+            $table->timestamp('last_active_at')->nullable();
+            $table->string('nisn', 10)->nullable()->unique();
+            $table->timestamp('nisn_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
@@ -39,15 +37,13 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

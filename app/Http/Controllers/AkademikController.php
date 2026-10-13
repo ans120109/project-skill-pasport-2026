@@ -4,6 +4,6 @@ class AkademikController extends Controller
 {
     public function index()
     {
-        return view('akademik'); // Memanggil file akademik.blade.php
+        return view('akademik');
     }
 }

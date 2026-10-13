@@ -3,127 +3,47 @@
 @section('title', 'Login')
 
 @section('content')
-
-<div class="login-page">
-
-    <div class="login-card">
-
-        {{-- LOGO --}}
-        <div class="login-logo">
-            🏫
-        </div>
-
-        {{-- JUDUL --}}
+<div class="auth-wrap">
+    <div class="auth-card">
         <h1>Login</h1>
-
-        <p class="login-subtitle">
-            Masuk ke Panel Sekolah
-        </p>
-
-
-        {{-- PESAN ERROR --}}
-        @if(session('error'))
-            <div class="login-alert login-alert-error">
-                {{ session('error') }}
-            </div>
-        @endif
-
+        <p class="auth-sub">Masuk ke Panel Sekolah</p>
 
         @if(session('success'))
-            <div class="login-alert login-alert-success">
-                {{ session('success') }}
-            </div>
+            <div class="alert alert-success">{{ session('success') }}</div>
         @endif
-
 
         @if($errors->any())
-            <div class="login-alert login-alert-error">
-                {{ $errors->first() }}
-            </div>
+            <div class="alert alert-error">{{ $errors->first() }}</div>
         @endif
 
-
-        {{-- FORM LOGIN --}}
-        <form
-            action="{{ route('login.process') }}"
-            method="POST"
-        >
-
+        <form action="{{ route('login.process') }}" method="POST">
             @csrf
 
-
-            {{-- USERNAME --}}
-            <div class="login-form-group">
-
-                <label for="username">
-                    Username
-                </label>
-
-                <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    value="{{ old('username') }}"
-                    placeholder="Masukkan username"
-                    required
-                    autocomplete="username"
-                >
-
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username"
+                       class="form-input @error('username') is-invalid @enderror"
+                       value="{{ old('username') }}" placeholder="Masukkan username"
+                       autocomplete="username" autofocus required>
+                @error('username')<div class="form-error">{{ $message }}</div>@enderror
             </div>
 
-
-            {{-- PASSWORD --}}
-            <div class="login-form-group">
-
-                <label for="password">
-                    Kata Sandi
-                </label>
-
-                <input
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Masukkan kata sandi"
-                    required
-                    autocomplete="current-password"
-                >
-
+            <div class="form-group">
+                <label for="password">Kata Sandi</label>
+                <input type="password" id="password" name="password"
+                       class="form-input @error('password') is-invalid @enderror"
+                       placeholder="Masukkan kata sandi"
+                       autocomplete="current-password" required>
+                @error('password')<div class="form-error">{{ $message }}</div>@enderror
             </div>
 
-
-            {{-- BUTTON --}}
-            <button
-                type="submit"
-                class="login-button"
-            >
-                Login
-            </button>
-
+            <button type="submit" class="form-btn">Login</button>
         </form>
 
-
-        {{-- REGISTER --}}
-        <div class="login-register">
-
-            Belum punya akun?
-
-            <a href="{{ route('register') }}">
-                Register
-            </a>
-
+        <div class="auth-foot">
+            <span>Belum punya akun? <a href="{{ route('register') }}">Register</a></span>
+            <a href="{{ route('home') }}">&larr; Kembali ke halaman sekolah</a>
         </div>
-
-
-        {{-- KEMBALI --}}
-        <a
-            href="{{ url('/') }}"
-            class="login-back"
-        >
-            ← Kembali ke halaman sekolah
-        </a>
-
     </div>
-
 </div>
-
 @endsection

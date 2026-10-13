@@ -6,7 +6,6 @@
 <main class="content">
     <div class="container">
 
-        {{-- HEADER --}}
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <div>
                 <h1 class="page-title">Edit User</h1>
@@ -19,7 +18,6 @@
 
         <hr class="divider">
 
-        {{-- ERROR --}}
         @if ($errors->any())
             <div style="background:#f8d7da; color:#721c24; padding:12px 16px; border-radius:5px; margin-bottom:16px;">
                 <ul style="margin:0; padding-left:20px;">
@@ -48,7 +46,6 @@
                 @csrf
                 @method('PUT')
 
-                {{-- NAMA --}}
                 <div style="margin-bottom:16px;">
                     <label style="display:block; font-weight:600; margin-bottom:6px;">
                         Nama Lengkap <span style="color:red;">*</span>
@@ -57,7 +54,6 @@
                            style="width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
                 </div>
 
-                {{-- USERNAME --}}
                 <div style="margin-bottom:16px;">
                     <label style="display:block; font-weight:600; margin-bottom:6px;">
                         Username <span style="color:red;">*</span>
@@ -66,7 +62,6 @@
                            style="width:100%; padding:8px 12px; border:1px solid #ccc; border-radius:4px; font-size:14px;">
                 </div>
 
-                {{-- PASSWORD --}}
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
                     <div>
                         <label style="display:block; font-weight:600; margin-bottom:6px;">
@@ -84,7 +79,6 @@
                     </div>
                 </div>
 
-                {{-- ROLE --}}
                 <div style="margin-bottom:16px;">
                     <label style="display:block; font-weight:600; margin-bottom:6px;">
                         Role <span style="color:red;">*</span>
@@ -107,7 +101,6 @@
                     @endif
                 </div>
 
-                {{-- STATUS AKUN --}}
                 <div style="margin-bottom:20px; padding:16px; background:#f9f9f9; border-radius:6px;">
                     <label style="display:block; font-weight:600; margin-bottom:10px;">
                         Status Akun
@@ -157,7 +150,6 @@
                     @endif
                 </div>
 
-                {{-- TOMBOL --}}
                 <div class="action-buttons" style="margin-top:20px; padding-top:16px; border-top:1px solid #eee;">
                     <button type="submit" class="btn-action">Update</button>
                     <a href="{{ route('admin.users.index') }}" class="btn-action" style="background:#6c757d;">Batal</a>

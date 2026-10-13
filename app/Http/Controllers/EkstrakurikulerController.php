@@ -4,54 +4,53 @@ namespace App\Http\Controllers;
 
 use App\Models\Ekstrakurikuler;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class EkstrakurikulerController extends Controller
 {
-    private function authorizeAccess()
+    private function bisaKelola(): bool
     {
-        $user = Auth::user();
+        return auth()->check() && in_array(auth()->user()->role, ['admin', 'operator']);
+    }
 
-        if (!$user || !in_array($user->role, ['admin', 'operator'], true)) {
-            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
-        }
+    private function aturan(): array
+    {
+        return [
+            'nama'      => 'required|string|max:255',
+            'jadwal'    => 'nullable|string|max:255',
+            'deskripsi' => 'nullable|string',
+            'gambar'    => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+        ];
     }
 
     public function index()
     {
-        $ekstrakurikulers = Ekstrakurikuler::latest()->get();
-        return view('ekstrakurikuler.index', compact('ekstrakurikulers'));
+        $ekstrakurikuler = Ekstrakurikuler::latest()->get();
+        $bisaKelola = $this->bisaKelola();
+
+        return view('ekstrakurikuler.index', compact('ekstrakurikuler', 'bisaKelola'));
     }
 
     public function create()
     {
-        $this->authorizeAccess();
+        abort_unless($this->bisaKelola(), 403);
         return view('ekstrakurikuler.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorizeAccess();
+        abort_unless($this->bisaKelola(), 403);
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'deskripsi' => 'required|string',
-            'jadwal' => 'nullable|string|max:100',
-            'gambar' => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validate($this->aturan());
 
         if ($request->hasFile('gambar')) {
-            $validated['gambar'] = $request->file('gambar')->store('ekstrakurikuler', 'public');
+            $data['gambar'] = $request->file('gambar')->store('ekstrakurikuler', 'public');
         }
 
-        $validated['id_user'] = Auth::id();
+        Ekstrakurikuler::create($data);
 
-        Ekstrakurikuler::create($validated);
-
-        return redirect()
-            ->route('ekstrakurikuler.index')
-            ->with('success', 'Data ekstrakurikuler berhasil ditambahkan.');
+        return redirect()->route('ekstrakurikuler.index')
+            ->with('success', 'Ekstrakurikuler berhasil ditambahkan.');
     }
 
     public function show(Ekstrakurikuler $ekstrakurikuler)
@@ -61,47 +60,41 @@ class EkstrakurikulerController extends Controller
 
     public function edit(Ekstrakurikuler $ekstrakurikuler)
     {
-        $this->authorizeAccess();
+        abort_unless($this->bisaKelola(), 403);
         return view('ekstrakurikuler.edit', compact('ekstrakurikuler'));
     }
 
     public function update(Request $request, Ekstrakurikuler $ekstrakurikuler)
     {
-        $this->authorizeAccess();
+        abort_unless($this->bisaKelola(), 403);
 
-        $validated = $request->validate([
-            'nama' => 'required|string|max:100',
-            'deskripsi' => 'required|string',
-            'jadwal' => 'nullable|string|max:100',
-            'gambar' => 'nullable|image|max:2048',
-        ]);
+        $data = $request->validate($this->aturan());
 
         if ($request->hasFile('gambar')) {
             if ($ekstrakurikuler->gambar) {
                 Storage::disk('public')->delete($ekstrakurikuler->gambar);
             }
-            $validated['gambar'] = $request->file('gambar')->store('ekstrakurikuler', 'public');
+            $data['gambar'] = $request->file('gambar')->store('ekstrakurikuler', 'public');
+        } else {
+            unset($data['gambar']);
         }
 
-        $ekstrakurikuler->update($validated);
+        $ekstrakurikuler->update($data);
 
-        return redirect()
-            ->route('ekstrakurikuler.index')
-            ->with('success', 'Data ekstrakurikuler berhasil diperbarui.');
+        return redirect()->route('ekstrakurikuler.index')
+            ->with('success', 'Ekstrakurikuler berhasil diperbarui.');
     }
 
     public function destroy(Ekstrakurikuler $ekstrakurikuler)
     {
-        $this->authorizeAccess();
+        abort_unless($this->bisaKelola(), 403);
 
         if ($ekstrakurikuler->gambar) {
             Storage::disk('public')->delete($ekstrakurikuler->gambar);
         }
-
         $ekstrakurikuler->delete();
 
-        return redirect()
-            ->route('ekstrakurikuler.index')
-            ->with('success', 'Data ekstrakurikuler berhasil dihapus.');
+        return redirect()->route('ekstrakurikuler.index')
+            ->with('success', 'Ekstrakurikuler berhasil dihapus.');
     }
-};
+}

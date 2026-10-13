@@ -2,41 +2,30 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Ekstrakurikuler extends Model
 {
-    use HasFactory;
+    use HasUuids;
 
     protected $table = 'ekstrakurikulers';
     protected $primaryKey = 'id_ekstrakurikuler';
     public $incrementing = false;
     protected $keyType = 'string';
 
-    protected $fillable = [
-        'id_ekstrakurikuler',
-        'nama',
-        'deskripsi',
-        'gambar',
-        'jadwal',
-        'id_user',
-    ];
+    protected $fillable = ['id_user', 'nama', 'jadwal', 'deskripsi', 'gambar'];
 
-    protected static function boot()
+    
+    public function getGambarUrlAttribute(): ?string
     {
-        parent::boot();
+        if (!$this->gambar) {
+            return null;
+        }
 
-        static::creating(function ($model) {
-            if (empty($model->id_ekstrakurikuler)) {
-                $model->id_ekstrakurikuler = (string) Str::uuid();
-            }
-        });
-    }
-
-    public function pembina()
-    {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return Storage::disk('public')->exists($this->gambar)
+            ? asset('storage/' . $this->gambar)
+            : null;
     }
 }

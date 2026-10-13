@@ -10,10 +10,12 @@ return new class extends Migration
     {
         Schema::create('berita', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('id_user')->nullable()->constrained('users')->nullOnDelete();
             $table->string('judul');
             $table->text('isi');
             $table->string('foto')->nullable();
             $table->string('penulis')->nullable();
+            $table->string('kategori')->nullable();
             $table->date('tanggal')->nullable();
             $table->timestamps();
         });

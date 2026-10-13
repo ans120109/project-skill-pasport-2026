@@ -40,9 +40,7 @@
                 <div class="action-buttons" style="margin-top:20px; padding-top:16px; border-top:1px solid #eee;">
                     <form action="{{ route('logout') }}" method="POST" style="margin:0;">
                         @csrf
-                        <button type="submit" class="btn-action btn-danger">
-                            🚪 Logout
-                        </button>
+                        <button type="submit" class="btn-action btn-danger">🚪 Logout</button>
                     </form>
                 </div>
             @else
@@ -52,6 +50,9 @@
                 </p>
             @endauth
         </div>
+
+        <h2 style="margin:28px 0 14px;">🏫 Profil Sekolah</h2>
+        @include('partials.profil-sekolah')
 
     </div>
 </main>

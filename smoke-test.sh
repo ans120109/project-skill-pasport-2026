@@ -1,15 +1,4 @@
 #!/usr/bin/env bash
-#
-# Smoke test end-to-end untuk project Profil Sekolah (Laravel 12).
-#
-# Skrip ini MEMBUAT DATABASE UJI TERPISAH (nama database di .env + "_test"),
-# jadi data asli Anda tidak disentuh sama sekali. Setelah selesai, database
-# uji tersebut dihapus kembali.
-#
-# Cara pakai (dari folder project, lewat Git Bash):
-#     bash smoke-test.sh
-#
-# Kode keluar: 0 = semua lulus, 1 = ada yang gagal.
 
 set -u
 
@@ -23,9 +12,6 @@ SERVERLOG="$(mktemp)"
 PASS=0
 FAIL=0
 
-# ---------------------------------------------------------------------------
-# Baca konfigurasi database dari .env
-# ---------------------------------------------------------------------------
 env_get() { grep -E "^$1=" .env | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'"; }
 
 DB_HOST="$(env_get DB_HOST)";     DB_HOST="${DB_HOST:-127.0.0.1}"
@@ -48,9 +34,6 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# ---------------------------------------------------------------------------
-# Siapkan database uji
-# ---------------------------------------------------------------------------
 echo "Menyiapkan database uji: $DB_TEST"
 php -r "\$p=new PDO('mysql:host=$DB_HOST;port=$DB_PORT','$DB_USER','$DB_PASS'); \$p->exec('DROP DATABASE IF EXISTS \`$DB_TEST\`'); \$p->exec('CREATE DATABASE \`$DB_TEST\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci');" || { echo "GAGAL membuat database uji" >&2; exit 1; }
 
@@ -68,9 +51,6 @@ php artisan view:clear  >/dev/null 2>&1
 php artisan config:clear >/dev/null 2>&1
 php artisan route:clear  >/dev/null 2>&1
 
-# ---------------------------------------------------------------------------
-# Jalankan server
-# ---------------------------------------------------------------------------
 echo "Menjalankan server di port $PORT..."
 php artisan serve --port="$PORT" >"$SERVERLOG" 2>&1 &
 SERVER_PID=$!
@@ -82,9 +62,6 @@ done
 
 BASE="http://127.0.0.1:$PORT"
 
-# ---------------------------------------------------------------------------
-# Helper
-# ---------------------------------------------------------------------------
 dbq() { php artisan tinker --execute="$1" 2>/dev/null | tail -1; }
 
 get_token() {
@@ -95,13 +72,12 @@ get_token() {
 ok()   { echo "  [ OK ] $1"; PASS=$((PASS+1)); }
 bad()  { echo "  [FAIL] $1"; FAIL=$((FAIL+1)); }
 
-check_get() {  # $1 = path
+check_get() {
   local c
   c=$(curl -s -b "$JAR" -o "$BODY" -w "%{http_code}" "$BASE$1")
   if [ "$c" = "200" ]; then ok "GET $1"; else bad "GET $1 -> HTTP $c"; fi
 }
 
-# $1=label $2=method $3=path $4..=field=value
 req() {
   local label="$1" method="$2" path="$3"; shift 3
   local args=()
@@ -114,24 +90,21 @@ req() {
   esac
 }
 
-login_expect() {  # $1=username $2=password $3=pesan yang diharapkan
+login_expect() {
   rm -f "$JAR"
   local t; t=$(get_token /login)
   curl -s -b "$JAR" -c "$JAR" -o /dev/null -X POST "$BASE/login" \
     --data-urlencode "_token=$t" --data-urlencode "username=$1" --data-urlencode "password=$2"
-  # Pesan error di-flash ke session, jadi dibaca lewat request berikutnya
   curl -s -b "$JAR" -c "$JAR" -o "$BODY" "$BASE/login"
   grep -q "$3" "$BODY"
 }
 
-# ---------------------------------------------------------------------------
 echo ""
 echo "=== 1. LOGIN ADMIN ==="
 rm -f "$JAR"
 T=$(get_token /login)
 req "login babeh12" POST /login "_token=$T" "username=babeh12" "password=12345678"
 
-# Identitas akun yang sedang login, dipakai untuk memeriksa pencatatan penulis berita
 NAMA_LOGIN=$(dbq "echo App\Models\User::where('username','babeh12')->value('name');")
 ID_LOGIN=$(dbq "echo App\Models\User::where('username','babeh12')->value('id');")
 if [ -n "$NAMA_LOGIN" ] && [ -n "$ID_LOGIN" ]; then

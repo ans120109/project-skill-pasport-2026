@@ -2,97 +2,95 @@
 
 @section('title', 'Galeri')
 
-@section('content')
-<main class="content">
-    <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <div>
-                <h1 class="page-title">Galeri</h1>
-                <p class="page-subtitle">Dokumentasi kegiatan sekolah.</p>
-            </div>
+@push('styles')
+@include('partials.ui-styles')
+<style>
+    .page-header {
+        display: flex; justify-content: space-between; align-items: flex-start;
+        gap: 16px; flex-wrap: wrap;
+    }
 
-            @auth
-                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'operator')
-                    <a href="{{ route('galeri.create') }}" class="btn-action">
-                        + Tambah Foto
-                    </a>
-                @endif
-            @endauth
+    .galeri-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+    }
+    .galeri-card {
+        background: #fff; border-radius: 10px; overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+        display: flex; flex-direction: column;
+    }
+    .galeri-card img {
+        width: 100%; aspect-ratio: 3 / 4; object-fit: cover;
+        object-position: top center; display: block; background: #e9e6df;
+    }
+    .galeri-body { padding: 12px 14px 14px; display: flex; flex-direction: column; flex: 1; }
+    .galeri-body h3 { margin: 0 0 4px; font-size: 15px; }
+    .galeri-body p { margin: 0 0 8px; color: var(--muted); font-size: 12px; }
+    .galeri-body .galeri-link {
+        margin-top: auto; color: var(--gold); font-size: 12px; font-weight: 600;
+    }
+    .galeri-body .galeri-link:hover { text-decoration: underline; }
+    .galeri-body .aksi { margin-top: 12px; }
+</style>
+@endpush
+
+@section('content')
+@php
+    $bisaKelola = auth()->check() && in_array(auth()->user()->role, ['admin', 'operator']);
+@endphp
+
+<div class="container">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Galeri</h1>
+            <p class="page-subtitle">Dokumentasi kegiatan sekolah.</p>
         </div>
 
-        <hr class="divider">
-
-        @if (session('success'))
-            <div class="alert-success">
-                {{ session('success') }}
-            </div>
+        @if ($bisaKelola)
+            <a href="{{ route('galeri.create') }}" class="btn btn-tambah">Tambah Foto</a>
         @endif
+    </div>
+    <hr class="divider">
 
-        @if (isset($galeri) && $galeri->count() > 0)
+    @if (session('success'))
+        <div class="alert-success">{{ session('success') }}</div>
+    @endif
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:16px;">
-                @foreach ($galeri as $item)
-                    <div class="card" style="padding:0; overflow:hidden; margin-bottom:0;">
+    <div class="galeri-grid">
+        @forelse ($galeri as $item)
+            <div class="galeri-card">
+                @if ($item->foto)
+                    <img src="{{ asset('storage/' . $item->foto) }}" alt="{{ $item->judul }}">
+                @else
+                    <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='400'><rect width='100%' height='100%' fill='%23e9e6df'/></svg>" alt="Tanpa foto">
+                @endif
 
-                        @if ($item->foto)
-                            <img src="{{ asset('storage/' . $item->foto) }}"
-                                 alt="{{ $item->judul ?? 'Foto' }}"
-                                 style="width:100%; height:180px; object-fit:cover; display:block;">
-                        @else
-                            <div style="width:100%; height:180px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; color:#888;">
-                                Tidak ada foto
-                            </div>
-                        @endif
+                <div class="galeri-body">
+                    <h3>{{ $item->judul }}</h3>
 
-                        <div style="padding:12px 16px;">
-                            <strong style="display:block; font-size:15px; color:#0d1b3e; margin-bottom:4px;">
-                                {{ $item->judul ?? 'Tanpa Judul' }}
-                            </strong>
-                            {{-- <p class="muted" style="font-size:13px; margin:0;">
-                                {{ $item->deskripsi ?? '' }}
-                            </p> --}}
+                    @if ($item->deskripsi)
+                        <p>{{ \Illuminate\Support\Str::limit(strip_tags($item->deskripsi), 80) }}</p>
+                    @endif
 
-                            @auth
-                                @if (Auth::user()->role === 'admin' || Auth::user()->role === 'operator')
-                                    <div class="action-buttons" style="margin-top:10px;">
-                                        <form action="{{ route('galeri.destroy', $item->id) }}"
-                                              method="POST"
-                                              onsubmit="return confirm('Yakin hapus foto ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn-action btn-danger"
-                                                    style="font-size:12px; padding:4px 10px;">
-                                                Hapus
-                                            </button>
-                                        </form>
-                                    </div>
-                                @endif
-                            @endauth
-                        </div>
+                    <a href="{{ route('galeri.show', $item->getKey()) }}" class="galeri-link">Lihat deskripsi lengkap →</a>
 
-                    </div>
-                @endforeach
-            </div>
-
-        @else
-
-            <div class="card">
-                <h2>📸 Galeri Kegiatan</h2>
-                <p class="muted">Belum ada foto.</p>
-
-                @auth
-                    @if (Auth::user()->role === 'admin' || Auth::user()->role === 'operator')
-                        <div class="action-buttons" style="margin-top:12px;">
-                            <a href="{{ route('galeri.create') }}" class="btn-action">
-                                + Tambah Foto Pertama
-                            </a>
+                    @if ($bisaKelola)
+                        <div class="aksi">
+                            <a href="{{ route('galeri.edit', $item->getKey()) }}" class="btn btn-edit btn-sm">Edit</a>
+                            <form action="{{ route('galeri.destroy', $item->getKey()) }}" method="POST"
+                                  onsubmit="return confirm('Hapus foto ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-hapus btn-sm">Hapus</button>
+                            </form>
                         </div>
                     @endif
-                @endauth
+                </div>
             </div>
-
-        @endif
-
+        @empty
+            <div class="empty" style="grid-column: 1 / -1;">Belum ada foto di galeri.</div>
+        @endforelse
     </div>
-</main>
+</div>
 @endsection

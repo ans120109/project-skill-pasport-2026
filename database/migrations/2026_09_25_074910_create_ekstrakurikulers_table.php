@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('ekstrakurikulers', function (Blueprint $table) {
             $table->uuid('id_ekstrakurikuler')->primary();
-            $table->string('nama', 100);
-            $table->text('deskripsi');
-            $table->string('gambar', 100)->nullable();
-            $table->string('jadwal', 100)->nullable(); // contoh: "Setiap Sabtu, 08.00 - 10.00"
-            $table->foreignId('id_user')->constrained('users', 'id')->onUpdate('cascade')->onDelete('restrict'); // pembina / pembuat data
-
+            $table->foreignId('id_user')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('nama');
+            $table->string('jadwal')->nullable();
+            $table->text('deskripsi')->nullable();
+            $table->string('gambar')->nullable();
             $table->timestamps();
         });
     }
